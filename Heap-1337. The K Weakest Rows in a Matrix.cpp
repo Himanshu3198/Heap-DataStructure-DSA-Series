@@ -1,56 +1,52 @@
-// 1337. The K Weakest Rows in a Matrix
 
+//  time complexity O(n*m+ log(k))
+//  space complexity O(k)
+
+struct Matrix{
+    
+    int sum;
+    int index;
+    Matrix(int _s,int _idx){
+        sum=_s;
+        index=_idx;
+    }
+};
+
+struct cmp{
+    bool operator()(const Matrix &left,const Matrix &right)const{
+        return left.sum==right.sum?left.index<right.index:left.sum<right.sum;
+    }
+};
 class Solution {
 public:
     vector<int> kWeakestRows(vector<vector<int>>& mat, int k) {
-         
         
-        priority_queue<pair<int,int>>pq;
+        
+        priority_queue<Matrix,vector<Matrix>,cmp>pq;
+        
         
         int n=mat.size();
         int m=mat[0].size();
-        int count=0;
+        
         for(int i=0;i<n;i++){
-            
-            
-            for(int j=0;j<m;j++){
+            int sum=0;
+            for(int j=0;j<mat[i].size();j++){
                 
-                
-                if(mat[i][j]==1){
-                    count++;
-                }
-                
-                
+                sum+=mat[i][j];
             }
-            
-            pq.push({count,i});
-            
-            
+            pq.push({sum,i});
             if(pq.size()>k){
                 pq.pop();
             }
-            
-            count=0;
         }
         
-        
-        vector<int>res;
-        
-        
-        while(pq.size()>0){
+        vector<int>res(k--,0);
+    
+        while(!pq.empty()){
             
-            
-            int cur=pq.top().second;
+            res[k--]=pq.top().index;
             pq.pop();
-            
-            res.push_back(cur);
         }
-        
-        
-        reverse(res.begin(),res.end());
         return res;
-        
-        
-        
     }
 };

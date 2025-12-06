@@ -57,4 +57,78 @@ int main()
     string s = "aaabcdd";
 
     cout << reorganiseString(s);
+
+}
+
+
+// java code
+
+class Pair implements Comparable<Pair>{
+    Character c;
+    Integer count;
+
+    public Pair(Character c, Integer count){
+        this.c = c;
+        this.count = count;
+    }
+
+    public void updateCount(){
+        this.count = this.count-1;
+    }
+
+    @Override
+    public int compareTo(Pair other){
+
+        return Integer.compare(other.count,this.count);
+    }
+}
+class Solution {
+    public String reorganizeString(String s) {
+        
+        Map<Character,Integer> freq = new HashMap<>();
+        for(int i=0;i<s.length();i++){
+            Character c = s.charAt(i);
+            freq.put(c,freq.getOrDefault(c,0)+1);
+        }
+
+        PriorityQueue<Pair> maxHeap = new PriorityQueue<>();
+
+        for(Map.Entry<Character,Integer> x :freq.entrySet()){
+
+            maxHeap.add(new Pair(x.getKey(),x.getValue()));
+        }
+
+        StringBuilder ans = new StringBuilder();
+        while(maxHeap.size()>1){
+
+            Pair first = maxHeap.poll();
+            Pair second = maxHeap.poll();
+
+            if(first.count > 0){
+                ans.append(first.c);
+                first.updateCount();
+                if(first.count > 0){
+                    maxHeap.add(first);
+                }
+            }
+
+            if(second.count > 0){
+                ans.append(second.c);
+                second.updateCount();
+                if(second.count > 0){
+                    maxHeap.add(second);
+                }
+            }
+
+        }
+
+        if(!maxHeap.isEmpty()){
+
+            Pair last = maxHeap.poll();
+            if(last.count >1) return "";
+            ans.append(last.c);
+            last.updateCount();
+        }
+        return ans.toString();
+    }
 }
